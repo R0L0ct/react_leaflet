@@ -6,7 +6,7 @@ import { streetReducer } from "./reducers/street/street.reducer";
 const persistConfig = {
   key: "root",
   storage: storage,
-  whitelist: [],
+  whitelist: ["formData"],
 };
 
 export const rootReducer = combineReducers({

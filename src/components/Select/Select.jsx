@@ -14,9 +14,7 @@ export const Select = () => {
         dispatch(selectStreet(e.target.value));
       }}
     >
-      <option value="none" selected="selected">
-        Selecciona una calle
-      </option>
+      <option value="">Selecciona una calle</option>
       {calles.map((s) => {
         return (
           <OptionStyled value={s} key={s}>

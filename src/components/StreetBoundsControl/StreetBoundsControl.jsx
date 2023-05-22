@@ -33,8 +33,9 @@ function StreetBoundsControl({ streets, status }) {
     //     polygonRef.current.setStyle({ color: "red" });
     //   }
     // };
+
     streets.forEach(getCoordinates);
-  }, [streets, status]);
+  }, [streets]);
 
   // const getColor = () => {
   //   if (status === "activo") {

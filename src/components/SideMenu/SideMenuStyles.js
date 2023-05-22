@@ -26,3 +26,19 @@ export const StreetsStyled = styled.p`
   font-weight: 600;
   color: white;
 `;
+
+export const RadioContainerStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const LabelStyled = styled.label`
+  font-weight: 600;
+`;
+
+export const RadioStyled = styled.div`
+  width: 100px;
+  display: flex;
+  gap: 5px;
+`;

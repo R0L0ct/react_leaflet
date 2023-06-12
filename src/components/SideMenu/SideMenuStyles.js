@@ -2,24 +2,39 @@ import { styled } from "styled-components";
 
 export const SideMenuContainerStyled = styled.div`
   height: 100vh;
-  width: 500px;
+  min-width: 500px;
   position: fixed;
   background-color: white;
   top: 20px;
   left: 0;
   z-index: 9999;
   border-top-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 10px 0 10px;
 `;
 
-export const ButtonAddStyled = styled.button``;
+export const FormStyled = styled.form`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+`;
+
+export const ButtonAddStyled = styled.button`
+  width: 50px;
+  cursor: pointer;
+`;
 
 export const ListContainerStyled = styled.div`
-  width: 100%;
   background-color: gray;
   display: flex;
   flex-direction: column;
   gap: 5px;
   height: 200px;
+  padding: 10px;
+  border-radius: 10px;
   overflow: auto;
 `;
 export const StreetsStyled = styled.p`
@@ -29,7 +44,7 @@ export const StreetsStyled = styled.p`
 
 export const RadioContainerStyled = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 10px;
 `;
 

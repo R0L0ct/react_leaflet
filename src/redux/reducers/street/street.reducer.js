@@ -2,17 +2,23 @@ import { data } from "../../../data/data";
 import { addSelectedStreets } from "../../../utils/addSelectedStreets";
 import { selectStreet } from "../../../utils/selectStreet";
 import {
+  ADD_COORDENADAS,
   ADD_FORM_DATA,
   ADD_SELECTED_STREET,
   CLEAR_DATA,
+  REMOVE_COOR,
   REMOVE_SELECTED_STREET,
   SELECT_STREET,
+  TOGGLE_MENU,
 } from "./street.action";
 
 const INITIAL_STATE = {
   streets: [],
   selectedStreet: "",
-  formData: data,
+  formData: [],
+  hiddenMenu: false,
+  coordenadas: [],
+  fechaPoligono: "",
 };
 
 export const streetReducer = (state = INITIAL_STATE, action) => {
@@ -41,6 +47,22 @@ export const streetReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         streets: [],
+        coordenadas: [],
+      };
+    case TOGGLE_MENU:
+      return {
+        ...state,
+        hiddenMenu: !state.hiddenMenu,
+      };
+    case ADD_COORDENADAS:
+      return {
+        ...state,
+        coordenadas: [...state.coordenadas, action.payload],
+      };
+    case REMOVE_COOR:
+      return {
+        ...state,
+        coordenadas: state.coordenadas.filter((c) => c !== action.payload),
       };
 
     default:

@@ -10,12 +10,14 @@ import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 import { Markers } from "./Markers";
 import StreetBoundsControl from "../StreetBoundsControl/StreetBoundsControl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as streetActions from "../../redux/reducers/street/street.action";
 
 export const MapView = () => {
   // const [calles, setCalles] = useState([]);
   // const [busqueda, setBusqueda] = useState("");
-
+  const dispatch = useDispatch();
+  const coor = useSelector((state) => state.street.coordenadas);
   const [popupContent, setPopupContent] = useState(null);
 
   function MapClickHandler() {
@@ -24,11 +26,13 @@ export const MapView = () => {
         const { lat, lng } = e.latlng;
         const content = {
           latlng: e.latlng,
-          content: `You clicked the map at ${lat.toFixed(4)}, ${lng.toFixed(
-            4
-          )}`,
+          content: ` ${lat.toFixed(4)}, ${lng.toFixed(4)}`,
         };
         setPopupContent(content);
+        const response = window.confirm("Agregar coordenada?");
+        if (response) {
+          dispatch(streetActions.addCoordenadas({ lat: lat, lon: lng }));
+        }
       },
     });
     return null;
@@ -52,7 +56,7 @@ export const MapView = () => {
   }, []);
 
   useEffect(() => {
-    console.log(formData);
+    console.log(formData.map((c) => c.coor));
   }, [formData]);
   const maxZoomOut = 12; // Nivel máximo de zoom permitido
 
@@ -83,15 +87,11 @@ export const MapView = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <ZoomControl position="topright" />
+      <ZoomControl position="bottomright" />
       <ZoomRestriction />
-      {datos
-        ? datos.map((calle) => {
-            return <StreetBoundsControl key={calle.id} {...calle} />;
-          })
-        : formData.map((calle) => {
-            return <StreetBoundsControl key={calle.id} {...calle} />;
-          })}
+      {formData.map((calle) => {
+        return <StreetBoundsControl key={calle.id} {...calle} />;
+      })}
       <Markers />
       <MapClickHandler />
       {popupContent && (

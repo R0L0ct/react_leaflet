@@ -3,6 +3,9 @@ export const ADD_SELECTED_STREET = "ADD_SELECTED_STREET";
 export const REMOVE_SELECTED_STREET = "REMOVE_SELECTED_STREET";
 export const ADD_FORM_DATA = "ADD_FORM_DATA";
 export const CLEAR_DATA = "CLEAR_DATA";
+export const TOGGLE_MENU = "TOGGLE_MENU";
+export const ADD_COORDENADAS = "ADD_COORDENADAS";
+export const REMOVE_COOR = "REMOVE_COOR";
 
 export const selectStreet = (street) => ({
   type: SELECT_STREET,
@@ -26,4 +29,18 @@ export const addFormData = (data) => ({
 
 export const clearData = () => ({
   type: CLEAR_DATA,
+});
+
+export const toggleMenu = () => ({
+  type: TOGGLE_MENU,
+});
+
+export const addCoordenadas = (coordenadas) => ({
+  type: ADD_COORDENADAS,
+  payload: coordenadas,
+});
+
+export const removeSelectedCoor = (coor) => ({
+  type: REMOVE_COOR,
+  payload: coor,
 });

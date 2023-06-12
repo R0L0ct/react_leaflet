@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   ButtonAddStyled,
+  FormStyled,
   LabelStyled,
   ListContainerStyled,
   RadioContainerStyled,
@@ -17,6 +18,7 @@ export const SideMenu = () => {
   const selectedstreet = useSelector((state) => state.street.selectedStreet);
   const street = useSelector((state) => state.street.streets);
   const formData = useSelector((state) => state.street.formData);
+  const coordenadas = useSelector((state) => state.street.coordenadas);
   const [radioValue, setRadioValue] = useState("activo");
   const [inputNumber, setInputNumber] = useState("");
 
@@ -27,61 +29,86 @@ export const SideMenu = () => {
 
   return (
     <SideMenuContainerStyled>
-      <form
+      <div
+        style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        onClick={() => dispatch(streetActions.toggleMenu())}
+      >
+        <button
+          style={{
+            cursor: "pointer",
+            backgroundColor: "purple",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            width: "20px",
+            height: "20px",
+          }}
+        >
+          x
+        </button>
+      </div>
+      <FormStyled
         onSubmit={(e) => {
           e.preventDefault();
+          const fechaActual = new Date();
           dispatch(
             streetActions.addFormData({
               id: formData.length + 1,
-              streets: [street],
+              coor: [coordenadas],
               status: radioValue,
+              createdAt: fechaActual,
             })
           );
           guardarDatosEnLocalStorage("formData", [
             {
               id: formData.length + 1,
-              streets: street,
+              coor: coordenadas,
               status: radioValue,
+              createdAt: fechaActual,
             },
           ]);
           dispatch(streetActions.clearData());
           dispatch(streetActions.selectStreet(""));
         }}
       >
-        <Select />
-        <input
-          type="number"
-          onChange={(e) => {
-            setInputNumber(e.target.value);
-            console.log(inputNumber);
-          }}
-        />
-        <ButtonAddStyled
-          type="button"
-          onClick={() => {
-            dispatch(
-              streetActions.addSelectedStreet(
-                `${selectedstreet} ${inputNumber}`
-              )
-            );
-          }}
-        >
-          +
-        </ButtonAddStyled>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {/* <Select />
+          <input
+            style={{ width: "70px" }}
+            type="number"
+            onChange={(e) => {
+              setInputNumber(e.target.value);
+              console.log(inputNumber);
+            }}
+            placeholder="nro"
+          /> */}
+          {/* <ButtonAddStyled
+            type="button"
+            onClick={() => {
+              dispatch(
+                streetActions.addSelectedStreet(
+                  `${selectedstreet} ${inputNumber}`
+                )
+              );
+            }}
+          >
+            +
+          </ButtonAddStyled> */}
+        </div>
         <ListContainerStyled>
-          {street.map((s) => {
+          {coordenadas.map((s) => {
             return (
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                 }}
-                key={s}
+                key={`${s.lat}-${s.lon}`}
               >
-                <StreetsStyled>{s}</StreetsStyled>
+                <StreetsStyled>{`${s.lat} ${s.lon}`}</StreetsStyled>
                 <button
                   onClick={() => {
-                    dispatch(streetActions.removeSelectedStreet(s));
+                    dispatch(streetActions.removeSelectedCoor(s));
                   }}
                   type="button"
                 >
@@ -125,8 +152,10 @@ export const SideMenu = () => {
           </RadioStyled>
         </RadioContainerStyled>
 
-        <button type="submit">Agregar</button>
-      </form>
+        <button type="submit" style={{ cursor: "pointer" }}>
+          Agregar
+        </button>
+      </FormStyled>
     </SideMenuContainerStyled>
   );
 };

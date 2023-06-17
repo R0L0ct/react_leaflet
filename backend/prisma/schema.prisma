@@ -12,6 +12,7 @@ datasource db {
 
 model Poligono {
   id Int @id @default(autoincrement())
+  name String @unique
   coordenadas Coordenada[] 
   status String 
   createdAt DateTime @default(now())

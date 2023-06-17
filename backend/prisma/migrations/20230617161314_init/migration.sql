@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "Poligono" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -13,3 +14,6 @@ CREATE TABLE "Coordenada" (
     "poligonoId" INTEGER NOT NULL,
     CONSTRAINT "Coordenada_poligonoId_fkey" FOREIGN KEY ("poligonoId") REFERENCES "Poligono" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Poligono_name_key" ON "Poligono"("name");

@@ -22,7 +22,7 @@ export const MapView = () => {
 
   function MapClickHandler() {
     useMapEvents({
-      click(e) {
+      dblclick(e) {
         const { lat, lng } = e.latlng;
         const content = {
           latlng: e.latlng,
@@ -63,15 +63,6 @@ export const MapView = () => {
     fetchPoligonos();
   }, []);
 
-  // useEffect(() => {
-  //   // Obtener los datos almacenados en el localStorage
-  //   const datosAlmacenados = localStorage.getItem("formData");
-  //   if (datosAlmacenados) {
-  //     const datosObjeto = JSON.parse(datosAlmacenados);
-  //     setDatos(datosObjeto);
-  //   }
-  // }, []);
-
   const maxZoomOut = 12; // Nivel máximo de zoom permitido
 
   function ZoomRestriction() {
@@ -99,7 +90,7 @@ export const MapView = () => {
       dragging={true}
       touchZoom={true}
       scrollWheelZoom={true}
-      doubleClickZoom={true}
+      doubleClickZoom={false}
       zoomControl={false}
       maxBounds={maxBounds}
       maxBoundsViscosity={1.0}

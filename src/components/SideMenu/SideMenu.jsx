@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   FormStyled,
+  InputContainerStyled,
   LabelStyled,
   ListContainerStyled,
   RadioContainerStyled,
@@ -17,6 +18,7 @@ export const SideMenu = () => {
   const formData = useSelector((state) => state.street.formData);
   const coordenadas = useSelector((state) => state.street.coordenadas);
   const [radioValue, setRadioValue] = useState("activo");
+  const [nombre, setNombre] = useState("");
 
   return (
     <SideMenuContainerStyled>
@@ -51,6 +53,7 @@ export const SideMenu = () => {
             })
           );
           const responsePoligono = await addPoligono({
+            name: nombre,
             status: radioValue,
           });
 
@@ -71,6 +74,20 @@ export const SideMenu = () => {
           window.location.reload();
         }}
       >
+        <InputContainerStyled>
+          <label
+            htmlFor="nombre-poligono"
+            style={{ color: "black", fontWeight: "600" }}
+          >
+            Nombre:
+          </label>
+          <input
+            type="text"
+            id="nombre-poligono"
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </InputContainerStyled>
+
         <ListContainerStyled>
           {coordenadas.map((s) => {
             return (

@@ -8,12 +8,13 @@ export const NavbarContainerStyled = styled.div`
   padding-left: 10px;
   position: fixed;
   z-index: 9999;
-  background-color: white;
+  background-color: purple;
+  color: white;
 `;
 
 export const NavbarLinks = styled.div`
   :hover {
-    color: purple;
+    color: lightblue;
   }
 `;
 export const LinkStyled = styled.p`

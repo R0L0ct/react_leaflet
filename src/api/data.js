@@ -31,3 +31,12 @@ export async function getPoligonos() {
     return [];
   }
 }
+
+export async function deletePoligono(id) {
+  try {
+    const response = await axios.delete(`${API}/poligono/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}

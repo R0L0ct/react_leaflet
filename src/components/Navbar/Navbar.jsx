@@ -3,6 +3,7 @@ import { LinkStyled, NavbarContainerStyled, NavbarLinks } from "./NavbarStyles";
 import { SideMenu } from "../SideMenu/SideMenu";
 import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
+import { RightMenu } from "../RightMenu/RightMenu";
 
 export const Navbar = () => {
   const toggleMenu = useSelector((state) => state.street.hiddenMenu);
@@ -15,6 +16,7 @@ export const Navbar = () => {
         </LinkStyled>
       </NavbarLinks>
       {!toggleMenu && <SideMenu />}
+      <RightMenu />
     </NavbarContainerStyled>
   );
 };

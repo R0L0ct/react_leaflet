@@ -56,4 +56,13 @@ export const RadioStyled = styled.div`
   width: 100px;
   display: flex;
   gap: 5px;
+  color: black;
+`;
+
+export const InputContainerStyled = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 `;

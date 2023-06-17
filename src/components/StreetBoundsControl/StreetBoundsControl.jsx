@@ -1,8 +1,7 @@
 import { Polygon } from "react-leaflet";
 
-function StreetBoundsControl({ coor, status }) {
-  const coors = coor.map((c) => c);
-  const coordinates = [coors];
+function StreetBoundsControl({ coordenadas, status }) {
+  const coordinates = coordenadas.map((c) => [c.lat, c.lon]);
 
   return (
     <Polygon

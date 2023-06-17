@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  ButtonAddStyled,
   FormStyled,
   LabelStyled,
   ListContainerStyled,
@@ -9,23 +8,15 @@ import {
   SideMenuContainerStyled,
   StreetsStyled,
 } from "./SideMenuStyles";
-import { Select } from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
+import { addCoordenadas, addPoligono } from "../../api/data";
 
 export const SideMenu = () => {
   const dispatch = useDispatch();
-  const selectedstreet = useSelector((state) => state.street.selectedStreet);
-  const street = useSelector((state) => state.street.streets);
   const formData = useSelector((state) => state.street.formData);
   const coordenadas = useSelector((state) => state.street.coordenadas);
   const [radioValue, setRadioValue] = useState("activo");
-  const [inputNumber, setInputNumber] = useState("");
-
-  const guardarDatosEnLocalStorage = (clave, valor) => {
-    const datos = JSON.stringify(valor);
-    localStorage.setItem(clave, datos);
-  };
 
   return (
     <SideMenuContainerStyled>
@@ -48,7 +39,7 @@ export const SideMenu = () => {
         </button>
       </div>
       <FormStyled
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           const fechaActual = new Date();
           dispatch(
@@ -59,42 +50,27 @@ export const SideMenu = () => {
               createdAt: fechaActual,
             })
           );
-          guardarDatosEnLocalStorage("formData", [
-            {
-              id: formData.length + 1,
-              coor: coordenadas,
-              status: radioValue,
-              createdAt: fechaActual,
-            },
-          ]);
+          const responsePoligono = await addPoligono({
+            status: radioValue,
+          });
+
+          const poligonoId = responsePoligono.data.id;
+          coordenadas.map(async (c) => {
+            await addCoordenadas({
+              lat: c.lat,
+              lon: c.lon,
+              poligonoId: poligonoId,
+            });
+          });
+
+          // await getPoligonos();
+
           dispatch(streetActions.clearData());
           dispatch(streetActions.selectStreet(""));
+          // Reiniciar la página
+          window.location.reload();
         }}
       >
-        <div style={{ display: "flex", gap: "10px" }}>
-          {/* <Select />
-          <input
-            style={{ width: "70px" }}
-            type="number"
-            onChange={(e) => {
-              setInputNumber(e.target.value);
-              console.log(inputNumber);
-            }}
-            placeholder="nro"
-          /> */}
-          {/* <ButtonAddStyled
-            type="button"
-            onClick={() => {
-              dispatch(
-                streetActions.addSelectedStreet(
-                  `${selectedstreet} ${inputNumber}`
-                )
-              );
-            }}
-          >
-            +
-          </ButtonAddStyled> */}
-        </div>
         <ListContainerStyled>
           {coordenadas.map((s) => {
             return (

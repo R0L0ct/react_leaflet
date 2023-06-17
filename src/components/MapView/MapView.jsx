@@ -10,14 +10,14 @@ import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 import { Markers } from "./Markers";
 import StreetBoundsControl from "../StreetBoundsControl/StreetBoundsControl";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
+import { getPoligonos } from "../../api/data";
+import { MoonLoader } from "react-spinners";
 
 export const MapView = () => {
-  // const [calles, setCalles] = useState([]);
-  // const [busqueda, setBusqueda] = useState("");
   const dispatch = useDispatch();
-  const coor = useSelector((state) => state.street.coordenadas);
+  // const coor = useSelector((state) => state.street.coordenadas);
   const [popupContent, setPopupContent] = useState(null);
 
   function MapClickHandler() {
@@ -38,26 +38,40 @@ export const MapView = () => {
     return null;
   }
 
-  const formData = useSelector((state) => state.street.formData);
+  // const formData = useSelector((state) => state.street.formData);
   const mapCenter = [-31.7446, -60.5176]; // Coordenadas de Paraná
   const maxBounds = [
     [-31.8642, -60.6741], // Coordenadas del límite inferior izquierdo
     [-31.6242, -60.3611], // Coordenadas del límite superior derecho
   ];
-  const [datos, setDatos] = useState(null);
+  // const [datos, setDatos] = useState(null);
+
+  const [poligonData, setPoligonData] = useState([]);
 
   useEffect(() => {
-    // Obtener los datos almacenados en el localStorage
-    const datosAlmacenados = localStorage.getItem("formData");
-    if (datosAlmacenados) {
-      const datosObjeto = JSON.parse(datosAlmacenados);
-      setDatos(datosObjeto);
-    }
+    const fetchPoligonos = async () => {
+      try {
+        const data = await getPoligonos();
+        console.log(data); // Imprime la respuesta en la consola
+        setPoligonData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+      }
+    };
+    fetchPoligonos();
   }, []);
 
-  useEffect(() => {
-    console.log(formData.map((c) => c.coor));
-  }, [formData]);
+  // useEffect(() => {
+  //   // Obtener los datos almacenados en el localStorage
+  //   const datosAlmacenados = localStorage.getItem("formData");
+  //   if (datosAlmacenados) {
+  //     const datosObjeto = JSON.parse(datosAlmacenados);
+  //     setDatos(datosObjeto);
+  //   }
+  // }, []);
+
   const maxZoomOut = 12; // Nivel máximo de zoom permitido
 
   function ZoomRestriction() {
@@ -71,6 +85,13 @@ export const MapView = () => {
 
     return null;
   }
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <MapContainer
       center={mapCenter}
@@ -89,9 +110,25 @@ export const MapView = () => {
       />
       <ZoomControl position="bottomright" />
       <ZoomRestriction />
-      {formData.map((calle) => {
-        return <StreetBoundsControl key={calle.id} {...calle} />;
-      })}
+      {isLoading ? (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "fixed",
+            top: "400px",
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <MoonLoader color="purple" width={100} cssOverride={override} />
+        </div>
+      ) : (
+        poligonData?.data.map((coor) => {
+          return <StreetBoundsControl key={coor.id} {...coor} />;
+        })
+      )}
       <Markers />
       <MapClickHandler />
       {popupContent && (

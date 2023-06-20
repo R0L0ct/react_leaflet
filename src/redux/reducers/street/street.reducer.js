@@ -6,6 +6,7 @@ import {
   ADD_FORM_DATA,
   ADD_SELECTED_STREET,
   CLEAR_DATA,
+  POLIGON_DATA,
   REMOVE_COOR,
   REMOVE_SELECTED_STREET,
   SELECT_STREET,
@@ -19,6 +20,7 @@ const INITIAL_STATE = {
   hiddenMenu: false,
   coordenadas: [],
   fechaPoligono: "",
+  poligon: "",
 };
 
 export const streetReducer = (state = INITIAL_STATE, action) => {
@@ -63,6 +65,11 @@ export const streetReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         coordenadas: state.coordenadas.filter((c) => c !== action.payload),
+      };
+    case POLIGON_DATA:
+      return {
+        ...state,
+        poligon: action.payload,
       };
 
     default:

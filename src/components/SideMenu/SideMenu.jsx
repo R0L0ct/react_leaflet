@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormStyled,
   InputContainerStyled,
@@ -11,15 +11,53 @@ import {
 } from "./SideMenuStyles";
 import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
-import { addCoordenadas, addPoligono } from "../../api/data";
+import {
+  addCoordenadas,
+  addPoligono,
+  getPoligono,
+  updateCoordenadas,
+  updatePoligono,
+} from "../../api/data";
 
 export const SideMenu = () => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.street.formData);
   const coordenadas = useSelector((state) => state.street.coordenadas);
-  const [radioValue, setRadioValue] = useState("activo");
   const [nombre, setNombre] = useState("");
+  const poligonId = useSelector((state) => state.street.poligon);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPoligono, setCurrentPoligono] = useState("");
+  const [radioValue, setRadioValue] = useState("activo");
 
+  const getCurrentPoligono = async () => {
+    try {
+      const data = await getPoligono(poligonId);
+      setCurrentPoligono(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (poligonId) {
+      getCurrentPoligono();
+    }
+  }, [poligonId]);
+
+  useEffect(() => {
+    if (!isLoading && currentPoligono) {
+      setNombre(currentPoligono.data.name);
+      setRadioValue(currentPoligono.data.status);
+      dispatch(
+        streetActions.addCoordenadas(
+          currentPoligono?.data.coordenadas.map((c) => {
+            return { lat: c.lat, lon: c.lon };
+          })
+        )
+      );
+      console.log(currentPoligono);
+    }
+  }, [isLoading, currentPoligono]);
   return (
     <SideMenuContainerStyled>
       <div
@@ -43,15 +81,20 @@ export const SideMenu = () => {
       <FormStyled
         onSubmit={async (e) => {
           e.preventDefault();
-          const fechaActual = new Date();
-          dispatch(
-            streetActions.addFormData({
-              id: formData.length + 1,
-              coor: [coordenadas],
+          if (currentPoligono && !isLoading && poligonId) {
+            await updatePoligono(poligonId, {
+              name: nombre,
               status: radioValue,
-              createdAt: fechaActual,
-            })
-          );
+            });
+          }
+          if (currentPoligono && !isLoading && coordenadas) {
+            const coorId = currentPoligono.data.coordenadas.map((co) => co);
+            console.log(coorId);
+            await updateCoordenadas(coorId.id, {
+              lat: coorId.lat,
+              lon: coorId.lon,
+            });
+          }
           const responsePoligono = await addPoligono({
             name: nombre,
             status: radioValue,
@@ -66,9 +109,6 @@ export const SideMenu = () => {
             });
           });
 
-          // await getPoligonos();
-
-          dispatch(streetActions.clearData());
           dispatch(streetActions.selectStreet(""));
           // Reiniciar la página
           window.location.reload();
@@ -84,32 +124,61 @@ export const SideMenu = () => {
           <input
             type="text"
             id="nombre-poligono"
-            onChange={(e) => setNombre(e.target.value)}
+            onChange={(e) => {
+              setNombre(e.target.value);
+            }}
+            placeholder="Ingrese el nombre de la zona"
+            value={nombre}
           />
         </InputContainerStyled>
 
         <ListContainerStyled>
-          {coordenadas.map((s) => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-                key={`${s.lat}-${s.lon}`}
-              >
-                <StreetsStyled>{`${s.lat} ${s.lon}`}</StreetsStyled>
-                <button
-                  onClick={() => {
-                    dispatch(streetActions.removeSelectedCoor(s));
+          {
+            // !isLoading
+            //   ? currentPoligono?.data.coordenadas.map((coor) => {
+            //       return (
+            //         <div
+            //           style={{
+            //             display: "flex",
+            //             justifyContent: "space-between",
+            //           }}
+            //           key={`${coor.lat}-${coor.lon}`}
+            //         >
+            //           <StreetsStyled>{`${coor.lat} ${coor.lon}`}</StreetsStyled>
+            //           <button
+            //             onClick={() => {
+            //               dispatch(streetActions.removeSelectedCoor(coor));
+            //             }}
+            //             type="button"
+            //           >
+            //             x
+            //           </button>
+            //         </div>
+            //       );
+            //     })
+            // :
+            coordenadas.map((s) => {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
-                  type="button"
+                  key={`${s.lat}-${s.lon}-${s.id}`}
                 >
-                  x
-                </button>
-              </div>
-            );
-          })}
+                  <StreetsStyled>{`${s.lat} ${s.lon}`}</StreetsStyled>
+                  <button
+                    onClick={() => {
+                      dispatch(streetActions.removeSelectedCoor(s));
+                    }}
+                    type="button"
+                  >
+                    x
+                  </button>
+                </div>
+              );
+            })
+          }
         </ListContainerStyled>
         <RadioContainerStyled>
           <RadioStyled>
@@ -118,7 +187,10 @@ export const SideMenu = () => {
               id="activo"
               name="opciones"
               value="Activo"
-              defaultChecked
+              onChange={(e) => {
+                setRadioValue(e.target.value);
+              }}
+              checked={radioValue}
               onClick={() => setRadioValue("activo")}
             />
             <LabelStyled htmlFor="activo">Activo</LabelStyled>
@@ -129,6 +201,10 @@ export const SideMenu = () => {
               id="inactivo"
               name="opciones"
               value="Inactivo"
+              onChange={(e) => {
+                setRadioValue(e.target.value);
+              }}
+              checked={radioValue}
               onClick={() => setRadioValue("inactivo")}
             />
             <LabelStyled htmlFor="inactivo">Inactivo</LabelStyled>
@@ -139,15 +215,24 @@ export const SideMenu = () => {
               id="reforzar"
               name="opciones"
               value="Reforzar"
+              onChange={(e) => {
+                setRadioValue(e.target.value);
+              }}
+              checked={radioValue}
               onClick={() => setRadioValue("reforzar")}
             />
             <LabelStyled htmlFor="reforzar">Reforzar</LabelStyled>
           </RadioStyled>
         </RadioContainerStyled>
-
-        <button type="submit" style={{ cursor: "pointer" }}>
-          Agregar
-        </button>
+        {currentPoligono ? (
+          <button type="submit" style={{ cursor: "pointer" }}>
+            Modificar
+          </button>
+        ) : (
+          <button type="submit" style={{ cursor: "pointer" }}>
+            Agregar
+          </button>
+        )}
       </FormStyled>
     </SideMenuContainerStyled>
   );

@@ -12,6 +12,24 @@ export async function addCoordenadas(coor) {
   }
 }
 
+export async function updateCoordenadas(id, coor) {
+  try {
+    const response = await axios.put(`${API}/coordenada/${id}`, coor);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteCoordenadas(id) {
+  try {
+    const response = await axios.put(`${API}/coordenada/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function addPoligono(poligono) {
   try {
     console.log(poligono);
@@ -32,9 +50,28 @@ export async function getPoligonos() {
   }
 }
 
+export async function getPoligono(id) {
+  try {
+    const response = await axios.get(`${API}/poligono/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function deletePoligono(id) {
   try {
     const response = await axios.delete(`${API}/poligono/${id}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updatePoligono(id, data) {
+  try {
+    const response = await axios.put(`${API}/poligono/${id}`, data);
     return response;
   } catch (error) {
     console.log(error);

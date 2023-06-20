@@ -52,7 +52,6 @@ export const MapView = () => {
     const fetchPoligonos = async () => {
       try {
         const data = await getPoligonos();
-        console.log(data); // Imprime la respuesta en la consola
         setPoligonData(data);
         setIsLoading(false);
       } catch (error) {

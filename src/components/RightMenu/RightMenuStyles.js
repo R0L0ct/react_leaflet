@@ -36,3 +36,8 @@ export const PoligonNameContainer = styled.div`
 export const ButtonStyled = styled.button`
   cursor: pointer;
 `;
+
+export const PoligonName = styled.p`
+  cursor: pointer;
+  font-weight: 600;
+`;

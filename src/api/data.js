@@ -23,7 +23,7 @@ export async function updateCoordenadas(id, coor) {
 
 export async function deleteCoordenadas(id) {
   try {
-    const response = await axios.put(`${API}/coordenada/${id}`);
+    const response = await axios.delete(`${API}/coordenada/${id}`);
     return response;
   } catch (error) {
     console.log(error);

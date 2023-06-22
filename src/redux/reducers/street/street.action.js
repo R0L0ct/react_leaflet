@@ -7,6 +7,9 @@ export const TOGGLE_MENU = "TOGGLE_MENU";
 export const ADD_COORDENADAS = "ADD_COORDENADAS";
 export const REMOVE_COOR = "REMOVE_COOR";
 export const POLIGON_DATA = "POLIGON_DATA";
+export const EDIT_MODE = "EDIT_MODE";
+export const UPDATE_COOR = "UPDATE_COOR";
+export const COORUPDATE = "COORUPDATE";
 
 export const selectStreet = (street) => ({
   type: SELECT_STREET,
@@ -49,4 +52,18 @@ export const removeSelectedCoor = (coor) => ({
 export const poligonData = (data) => ({
   type: POLIGON_DATA,
   payload: data,
+});
+
+export const editMode = (coor) => ({
+  type: EDIT_MODE,
+  payload: coor,
+});
+
+export const updateCoor = () => ({
+  type: UPDATE_COOR,
+});
+
+export const coorUpdate = (coor) => ({
+  type: COORUPDATE,
+  payload: coor,
 });

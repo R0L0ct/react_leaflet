@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { BsFillPencilFill } from "react-icons/bs";
 import {
+  ButtonListStyled,
   FormStyled,
   InputContainerStyled,
   LabelStyled,
@@ -14,6 +16,7 @@ import * as streetActions from "../../redux/reducers/street/street.action";
 import {
   addCoordenadas,
   addPoligono,
+  deleteCoordenadas,
   getPoligono,
   updateCoordenadas,
   updatePoligono,
@@ -21,13 +24,14 @@ import {
 
 export const SideMenu = () => {
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.street.formData);
+  // const formData = useSelector((state) => state.street.formData);
   const coordenadas = useSelector((state) => state.street.coordenadas);
   const [nombre, setNombre] = useState("");
   const poligonId = useSelector((state) => state.street.poligon);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPoligono, setCurrentPoligono] = useState("");
   const [radioValue, setRadioValue] = useState("activo");
+  const editmode = useSelector((s) => s.street.editMode);
 
   const getCurrentPoligono = async () => {
     try {
@@ -48,16 +52,18 @@ export const SideMenu = () => {
     if (!isLoading && currentPoligono) {
       setNombre(currentPoligono.data.name);
       setRadioValue(currentPoligono.data.status);
-      dispatch(
-        streetActions.addCoordenadas(
-          currentPoligono?.data.coordenadas.map((c) => {
-            return { lat: c.lat, lon: c.lon };
+      currentPoligono?.data.coordenadas.forEach((c) => {
+        dispatch(
+          streetActions.addCoordenadas({
+            lat: parseFloat(c.lat),
+            lon: parseFloat(c.lon),
+            id: c.id,
           })
-        )
-      );
-      console.log(currentPoligono);
+        );
+      });
     }
   }, [isLoading, currentPoligono]);
+
   return (
     <SideMenuContainerStyled>
       <div
@@ -81,37 +87,41 @@ export const SideMenu = () => {
       <FormStyled
         onSubmit={async (e) => {
           e.preventDefault();
-          if (currentPoligono && !isLoading && poligonId) {
+
+          if (currentPoligono) {
+            coordenadas.map(async (c) => {
+              await updateCoordenadas(poligonId, {
+                lat: c.lat,
+                lon: c.lon,
+              });
+            });
             await updatePoligono(poligonId, {
               name: nombre,
               status: radioValue,
             });
-          }
-          if (currentPoligono && !isLoading && coordenadas) {
-            const coorId = currentPoligono.data.coordenadas.map((co) => co);
-            console.log(coorId);
-            await updateCoordenadas(coorId.id, {
-              lat: coorId.lat,
-              lon: coorId.lon,
-            });
-          }
-          const responsePoligono = await addPoligono({
-            name: nombre,
-            status: radioValue,
-          });
 
-          const poligonoId = responsePoligono.data.id;
-          coordenadas.map(async (c) => {
-            await addCoordenadas({
-              lat: c.lat,
-              lon: c.lon,
-              poligonoId: poligonoId,
+            dispatch(streetActions.selectStreet(""));
+            // Reiniciar la página
+            window.location.reload();
+          } else {
+            const responsePoligono = await addPoligono({
+              name: nombre,
+              status: radioValue,
             });
-          });
 
-          dispatch(streetActions.selectStreet(""));
-          // Reiniciar la página
-          window.location.reload();
+            const poligonoId = responsePoligono.data.id;
+            coordenadas.map(async (c) => {
+              await addCoordenadas({
+                lat: c.lat,
+                lon: c.lon,
+                poligonoId: poligonoId,
+              });
+            });
+
+            dispatch(streetActions.selectStreet(""));
+            // Reiniciar la página
+            window.location.reload();
+          }
         }}
       >
         <InputContainerStyled>
@@ -133,52 +143,56 @@ export const SideMenu = () => {
         </InputContainerStyled>
 
         <ListContainerStyled>
-          {
-            // !isLoading
-            //   ? currentPoligono?.data.coordenadas.map((coor) => {
-            //       return (
-            //         <div
-            //           style={{
-            //             display: "flex",
-            //             justifyContent: "space-between",
-            //           }}
-            //           key={`${coor.lat}-${coor.lon}`}
-            //         >
-            //           <StreetsStyled>{`${coor.lat} ${coor.lon}`}</StreetsStyled>
-            //           <button
-            //             onClick={() => {
-            //               dispatch(streetActions.removeSelectedCoor(coor));
-            //             }}
-            //             type="button"
-            //           >
-            //             x
-            //           </button>
-            //         </div>
-            //       );
-            //     })
-            // :
-            coordenadas.map((s) => {
-              return (
+          {coordenadas.map((s) => {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+                key={`${s.lat}-${s.lon}-${s.id}`}
+              >
+                <StreetsStyled>{`${s.lat} ${s.lon}`}</StreetsStyled>
+
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "5px",
                   }}
-                  key={`${s.lat}-${s.lon}-${s.id}`}
                 >
-                  <StreetsStyled>{`${s.lat} ${s.lon}`}</StreetsStyled>
-                  <button
+                  <ButtonListStyled
                     onClick={() => {
-                      dispatch(streetActions.removeSelectedCoor(s));
+                      const response = window.confirm(
+                        "Desea modificar la coordenada?"
+                      );
+                      if (response) {
+                        dispatch(streetActions.editMode(s));
+                      }
+                    }}
+                    type="button"
+                  >
+                    <BsFillPencilFill />
+                  </ButtonListStyled>
+                  <ButtonListStyled
+                    onClick={async () => {
+                      const response = window.confirm(
+                        "Desea eliminar la coordenada?"
+                      );
+                      if (response) {
+                        dispatch(streetActions.removeSelectedCoor(s));
+                        await deleteCoordenadas(s.id);
+                      }
                     }}
                     type="button"
                   >
                     x
-                  </button>
+                  </ButtonListStyled>
                 </div>
-              );
-            })
-          }
+              </div>
+            );
+          })}
         </ListContainerStyled>
         <RadioContainerStyled>
           <RadioStyled>

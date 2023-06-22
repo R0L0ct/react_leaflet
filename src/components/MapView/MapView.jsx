@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 import { Markers } from "./Markers";
 import StreetBoundsControl from "../StreetBoundsControl/StreetBoundsControl";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
 import { getPoligonos } from "../../api/data";
 import { MoonLoader } from "react-spinners";
@@ -19,6 +19,7 @@ export const MapView = () => {
   const dispatch = useDispatch();
   // const coor = useSelector((state) => state.street.coordenadas);
   const [popupContent, setPopupContent] = useState(null);
+  const editMode = useSelector((state) => state.street.editMode);
 
   function MapClickHandler() {
     useMapEvents({
@@ -30,8 +31,16 @@ export const MapView = () => {
         };
         setPopupContent(content);
         const response = window.confirm("Agregar coordenada?");
-        if (response) {
-          dispatch(streetActions.addCoordenadas({ lat: lat, lon: lng }));
+        const res = window.confirm("Modificar coordenada?");
+        if (editMode) {
+          if (res) {
+            dispatch(streetActions.coorUpdate({ lat: lat, lon: lng }));
+            dispatch(streetActions.updateCoor());
+          }
+        } else {
+          if (response) {
+            dispatch(streetActions.addCoordenadas({ lat: lat, lon: lng }));
+          }
         }
       },
     });

@@ -32,13 +32,17 @@ router.post("/poligono", async (req: Request, res: Response) => {
 });
 
 router.put("/poligono/:id", async (req: Request, res: Response) => {
-  const updatePoligono = await prisma.poligono.update({
-    where: {
-      id: parseInt(req.params.id),
-    },
-    data: req.body,
-  });
-  res.json(updatePoligono);
+  try {
+    const updatePoligono = await prisma.poligono.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: req.body,
+    });
+    res.json(updatePoligono);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.delete("/poligono/:id", async (req: Request, res: Response) => {

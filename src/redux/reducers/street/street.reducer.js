@@ -1,16 +1,19 @@
-import { data } from "../../../data/data";
 import { addSelectedStreets } from "../../../utils/addSelectedStreets";
 import { selectStreet } from "../../../utils/selectStreet";
+import { replaceCoor } from "../../../utils/replaceCoor";
 import {
   ADD_COORDENADAS,
   ADD_FORM_DATA,
   ADD_SELECTED_STREET,
   CLEAR_DATA,
+  COORUPDATE,
+  EDIT_MODE,
   POLIGON_DATA,
   REMOVE_COOR,
   REMOVE_SELECTED_STREET,
   SELECT_STREET,
   TOGGLE_MENU,
+  UPDATE_COOR,
 } from "./street.action";
 
 const INITIAL_STATE = {
@@ -21,6 +24,8 @@ const INITIAL_STATE = {
   coordenadas: [],
   fechaPoligono: "",
   poligon: "",
+  editMode: {},
+  coorReplace: {},
 };
 
 export const streetReducer = (state = INITIAL_STATE, action) => {
@@ -70,6 +75,25 @@ export const streetReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         poligon: action.payload,
+      };
+    case EDIT_MODE:
+      return {
+        ...state,
+        editMode: action.payload,
+      };
+    case UPDATE_COOR:
+      return {
+        ...state,
+        coordenadas: replaceCoor(
+          state.coordenadas,
+          state.editMode,
+          state.coorReplace
+        ),
+      };
+    case COORUPDATE:
+      return {
+        ...state,
+        coorReplace: action.payload,
       };
 
     default:

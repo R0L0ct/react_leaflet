@@ -66,3 +66,7 @@ export const InputContainerStyled = styled.div`
   align-items: center;
   gap: 20px;
 `;
+
+export const ButtonListStyled = styled.button`
+  cursor: pointer;
+`;

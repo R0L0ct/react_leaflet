@@ -12,6 +12,7 @@ import * as streetActions from "../../redux/reducers/street/street.action";
 
 export const RightMenu = () => {
   const [poligonData, setPoligonData] = useState([]);
+  const [poligonId, setPoligonId] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,6 +21,7 @@ export const RightMenu = () => {
         const data = await getPoligonos();
         console.log(data); // Imprime la respuesta en la consola
         setPoligonData(data);
+        setPoligonId(data.data.map((id) => id.id));
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -39,7 +41,11 @@ export const RightMenu = () => {
                 <PoligonNameContainer key={nombre.id}>
                   <PoligonName
                     onClick={() => {
-                      dispatch(streetActions.poligonData(nombre.id));
+                      if (poligonId.find((p) => p !== nombre.id)) {
+                        dispatch(streetActions.poligonData(nombre.id));
+                      }
+
+                      console.log(poligonId);
                     }}
                   >
                     {nombre.name}

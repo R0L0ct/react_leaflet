@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BsFillPencilFill } from "react-icons/bs";
+import { FcCancel } from "react-icons/fc";
 import {
   ButtonListStyled,
   FormStyled,
@@ -46,6 +47,7 @@ export const SideMenu = () => {
     if (poligonId) {
       getCurrentPoligono();
     }
+    // eslint-disable-next-line
   }, [poligonId]);
 
   useEffect(() => {
@@ -62,6 +64,7 @@ export const SideMenu = () => {
         );
       });
     }
+    // eslint-disable-next-line
   }, [isLoading, currentPoligono]);
 
   return (
@@ -89,16 +92,19 @@ export const SideMenu = () => {
           e.preventDefault();
 
           if (currentPoligono) {
-            coordenadas.map(async (c) => {
-              await updateCoordenadas(poligonId, {
-                lat: c.lat,
-                lon: c.lon,
-              });
-            });
             await updatePoligono(poligonId, {
               name: nombre,
               status: radioValue,
             });
+            // Para agregar una coordenada extra , primero hay que asignarle un id tirando un post al  agregar la coordenada en la modificacion
+            await Promise.all(
+              coordenadas.map(async (c) => {
+                await updateCoordenadas(c.id, {
+                  lat: c.lat,
+                  lon: c.lon,
+                });
+              })
+            );
 
             dispatch(streetActions.selectStreet(""));
             // Reiniciar la página
@@ -110,13 +116,15 @@ export const SideMenu = () => {
             });
 
             const poligonoId = responsePoligono.data.id;
-            coordenadas.map(async (c) => {
-              await addCoordenadas({
-                lat: c.lat,
-                lon: c.lon,
-                poligonoId: poligonoId,
-              });
-            });
+            await Promise.all(
+              coordenadas.map(async (c) => {
+                await addCoordenadas({
+                  lat: c.lat,
+                  lon: c.lon,
+                  poligonoId: poligonoId,
+                });
+              })
+            );
 
             dispatch(streetActions.selectStreet(""));
             // Reiniciar la página
@@ -162,6 +170,15 @@ export const SideMenu = () => {
                     gap: "5px",
                   }}
                 >
+                  {editmode.id && s.id === editmode.id ? (
+                    <ButtonListStyled
+                      onClick={() => dispatch(streetActions.editMode({}))}
+                    >
+                      <FcCancel />
+                    </ButtonListStyled>
+                  ) : (
+                    ""
+                  )}
                   <ButtonListStyled
                     onClick={() => {
                       const response = window.confirm(
@@ -182,7 +199,6 @@ export const SideMenu = () => {
                       );
                       if (response) {
                         dispatch(streetActions.removeSelectedCoor(s));
-                        await deleteCoordenadas(s.id);
                       }
                     }}
                     type="button"
@@ -201,10 +217,8 @@ export const SideMenu = () => {
               id="activo"
               name="opciones"
               value="Activo"
-              onChange={(e) => {
-                setRadioValue(e.target.value);
-              }}
-              checked={radioValue}
+              checked={radioValue === "activo"}
+              readOnly={true}
               onClick={() => setRadioValue("activo")}
             />
             <LabelStyled htmlFor="activo">Activo</LabelStyled>
@@ -215,10 +229,8 @@ export const SideMenu = () => {
               id="inactivo"
               name="opciones"
               value="Inactivo"
-              onChange={(e) => {
-                setRadioValue(e.target.value);
-              }}
-              checked={radioValue}
+              checked={radioValue === "inactivo"}
+              readOnly={true}
               onClick={() => setRadioValue("inactivo")}
             />
             <LabelStyled htmlFor="inactivo">Inactivo</LabelStyled>
@@ -229,10 +241,8 @@ export const SideMenu = () => {
               id="reforzar"
               name="opciones"
               value="Reforzar"
-              onChange={(e) => {
-                setRadioValue(e.target.value);
-              }}
-              checked={radioValue}
+              checked={radioValue === "reforzar"}
+              readOnly={true}
               onClick={() => setRadioValue("reforzar")}
             />
             <LabelStyled htmlFor="reforzar">Reforzar</LabelStyled>

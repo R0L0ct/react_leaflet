@@ -30,14 +30,14 @@ export const MapView = () => {
           content: ` ${lat.toFixed(4)}, ${lng.toFixed(4)}`,
         };
         setPopupContent(content);
-        const response = window.confirm("Agregar coordenada?");
-        const res = window.confirm("Modificar coordenada?");
-        if (editMode) {
+        if (editMode.id !== null && editMode.id !== undefined) {
+          const res = window.confirm("Modificar coordenada?");
           if (res) {
             dispatch(streetActions.coorUpdate({ lat: lat, lon: lng }));
             dispatch(streetActions.updateCoor());
           }
         } else {
+          const response = window.confirm("Agregar coordenada?");
           if (response) {
             dispatch(streetActions.addCoordenadas({ lat: lat, lon: lng }));
           }

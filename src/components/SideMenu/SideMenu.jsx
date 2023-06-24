@@ -33,11 +33,13 @@ export const SideMenu = () => {
   const [currentPoligono, setCurrentPoligono] = useState("");
   const [radioValue, setRadioValue] = useState("activo");
   const editmode = useSelector((s) => s.street.editMode);
+  const [coorId, setCoorId] = useState("");
 
   const getCurrentPoligono = async () => {
     try {
       const data = await getPoligono(poligonId);
       setCurrentPoligono(data);
+      console.log(data.data.coordenadas.map((c) => c));
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -92,43 +94,58 @@ export const SideMenu = () => {
           e.preventDefault();
 
           if (currentPoligono) {
-            await updatePoligono(poligonId, {
-              name: nombre,
-              status: radioValue,
-            });
-            // Para agregar una coordenada extra , primero hay que asignarle un id tirando un post al  agregar la coordenada en la modificacion
-            await Promise.all(
-              coordenadas.map(async (c) => {
-                await updateCoordenadas(c.id, {
-                  lat: c.lat,
-                  lon: c.lon,
-                });
-              })
-            );
+            try {
+              await updatePoligono(poligonId, {
+                name: nombre,
+                status: radioValue,
+              });
 
-            dispatch(streetActions.selectStreet(""));
-            // Reiniciar la página
-            window.location.reload();
+              if (coorId) {
+                await deleteCoordenadas(coorId);
+              }
+              coordenadas.map(async (c) => {
+                isNaN(c.id)
+                  ? await addCoordenadas({
+                      lat: c.lat,
+                      lon: c.lon,
+                      poligonoId: poligonId,
+                    })
+                  : await updateCoordenadas(c.id, {
+                      lat: c.lat,
+                      lon: c.lon,
+                    });
+              });
+
+              dispatch(streetActions.selectStreet(""));
+              // Reiniciar la página
+              window.location.reload();
+            } catch (error) {
+              console.log(error);
+            }
           } else {
-            const responsePoligono = await addPoligono({
-              name: nombre,
-              status: radioValue,
-            });
+            try {
+              const responsePoligono = await addPoligono({
+                name: nombre,
+                status: radioValue,
+              });
 
-            const poligonoId = responsePoligono.data.id;
-            await Promise.all(
-              coordenadas.map(async (c) => {
-                await addCoordenadas({
-                  lat: c.lat,
-                  lon: c.lon,
-                  poligonoId: poligonoId,
-                });
-              })
-            );
+              const poligonoId = responsePoligono.data.id;
+              await Promise.all(
+                coordenadas.map(async (c) => {
+                  await addCoordenadas({
+                    lat: c.lat,
+                    lon: c.lon,
+                    poligonoId: poligonoId,
+                  });
+                })
+              );
 
-            dispatch(streetActions.selectStreet(""));
-            // Reiniciar la página
-            window.location.reload();
+              dispatch(streetActions.selectStreet(""));
+              // Reiniciar la página
+              window.location.reload();
+            } catch (error) {
+              console.log(error);
+            }
           }
         }}
       >
@@ -192,19 +209,25 @@ export const SideMenu = () => {
                   >
                     <BsFillPencilFill />
                   </ButtonListStyled>
-                  <ButtonListStyled
-                    onClick={async () => {
-                      const response = window.confirm(
-                        "Desea eliminar la coordenada?"
-                      );
-                      if (response) {
-                        dispatch(streetActions.removeSelectedCoor(s));
-                      }
-                    }}
-                    type="button"
-                  >
-                    x
-                  </ButtonListStyled>
+                  {editmode.id && s.id === editmode.id ? (
+                    <ButtonListStyled
+                      onClick={async () => {
+                        const response = window.confirm(
+                          "Desea eliminar la coordenada?"
+                        );
+                        if (response) {
+                          setCoorId(s.id);
+                          dispatch(streetActions.removeSelectedCoor(s));
+                          dispatch(streetActions.editMode({}));
+                        }
+                      }}
+                      type="button"
+                    >
+                      x
+                    </ButtonListStyled>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             );

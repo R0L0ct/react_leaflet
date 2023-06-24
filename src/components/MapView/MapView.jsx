@@ -35,6 +35,7 @@ export const MapView = () => {
           if (res) {
             dispatch(streetActions.coorUpdate({ lat: lat, lon: lng }));
             dispatch(streetActions.updateCoor());
+            // dispatch(streetActions.editMode({}));
           }
         } else {
           const response = window.confirm("Agregar coordenada?");

@@ -103,18 +103,20 @@ export const SideMenu = () => {
               if (coorId) {
                 await deleteCoordenadas(coorId);
               }
-              coordenadas.map(async (c) => {
-                isNaN(c.id)
-                  ? await addCoordenadas({
-                      lat: c.lat,
-                      lon: c.lon,
-                      poligonoId: poligonId,
-                    })
-                  : await updateCoordenadas(c.id, {
-                      lat: c.lat,
-                      lon: c.lon,
-                    });
-              });
+              await Promise.all(
+                coordenadas.map(async (c) => {
+                  isNaN(c.id)
+                    ? await addCoordenadas({
+                        lat: c.lat,
+                        lon: c.lon,
+                        poligonoId: poligonId,
+                      })
+                    : await updateCoordenadas(c.id, {
+                        lat: c.lat,
+                        lon: c.lon,
+                      });
+                })
+              );
 
               dispatch(streetActions.selectStreet(""));
               // Reiniciar la página

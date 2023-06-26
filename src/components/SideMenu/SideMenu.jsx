@@ -186,7 +186,7 @@ export const SideMenu = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    gap: "5px",
+                    gap: "7px",
                   }}
                 >
                   {editmode.id && s.id === editmode.id ? (

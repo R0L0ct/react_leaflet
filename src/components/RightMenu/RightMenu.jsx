@@ -7,14 +7,16 @@ import {
   RightMenuContainerStyled,
 } from "./RightMenuStyles";
 import { deletePoligono, getPoligonos } from "../../api/data";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
 
 export const RightMenu = () => {
   const [poligonData, setPoligonData] = useState([]);
   const [poligonId, setPoligonId] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [nombreId, setNombreId] = useState("");
+  const clickedPoligonId = useSelector(
+    (state) => state.street.clickedPoligonId
+  );
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchPoligonos = async () => {
@@ -42,11 +44,14 @@ export const RightMenu = () => {
                 <PoligonNameContainer key={nombre.id}>
                   <PoligonName
                     onClick={() => {
-                      setNombreId(nombre.id);
-                      if (nombreId !== nombre.id) {
+                      dispatch(streetActions.clickedPoligonId(nombre.id));
+                      if (clickedPoligonId !== nombre.id) {
                         dispatch(streetActions.clearData());
                         dispatch(streetActions.poligonData(nombre.id));
                       }
+                    }}
+                    style={{
+                      color: nombre.id === clickedPoligonId ? "purple" : "gray",
                     }}
                   >
                     {nombre.name}

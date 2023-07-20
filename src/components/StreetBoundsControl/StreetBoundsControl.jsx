@@ -1,6 +1,7 @@
 import { Polygon } from "react-leaflet";
 import { useDispatch, useSelector } from "react-redux";
 import * as streetActions from "../../redux/reducers/street/street.action";
+import React from "react";
 
 function StreetBoundsControl({ coordenadas, status }) {
   const coordinates = coordenadas.map((c) => [c.lat, c.lon]);

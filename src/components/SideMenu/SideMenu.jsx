@@ -61,15 +61,17 @@ export const SideMenu = () => {
       setNombre(currentPoligono.data.name);
       setNombreZona(currentPoligono.data.zone);
       setZonaDescripcion(currentPoligono.data.description);
-      currentPoligono?.data.coordenadas.forEach((c) => {
-        dispatch(
-          streetActions.addCoordenadas({
-            lat: parseFloat(c.lat),
-            lon: parseFloat(c.lon),
-            id: c.id,
-          })
-        );
-      });
+      if (currentPoligono.data.coordenadas) {
+        currentPoligono.data.coordenadas.forEach((c) => {
+          dispatch(
+            streetActions.addCoordenadas({
+              lat: parseFloat(c.lat),
+              lon: parseFloat(c.lon),
+              id: c.id,
+            })
+          );
+        });
+      }
     }
     // eslint-disable-next-line
   }, [isLoading, currentPoligono]);

@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const NavbarContainerStyled = styled.div`
   height: 20px;

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:4000";
+const API = "https://mapa-interactivo-v4.onrender.com";
 
 const axiosInstance = axios.create({
   timeout: 5000, // tiempo de espera de 5 segundos

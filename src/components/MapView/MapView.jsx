@@ -125,7 +125,7 @@ export const MapView = () => {
           <MoonLoader color="purple" width={100} cssOverride={override} />
         </div>
       ) : (
-        poligonData?.data.map((coor) => {
+        poligonData.data.map((coor) => {
           return <StreetBoundsControl key={coor.id} {...coor} />;
         })
       )}
@@ -133,10 +133,10 @@ export const MapView = () => {
       <MapClickHandler />
       {popupContent && (
         <Popup
-          position={popupContent?.latlng}
+          position={popupContent.latlng}
           onClose={() => setPopupContent(null)}
         >
-          <div>{popupContent?.content}</div>
+          <div>{popupContent.content}</div>
         </Popup>
       )}
     </MapContainer>

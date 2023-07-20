@@ -20,33 +20,25 @@ const app = express();
 //   );
 //   next();
 // });
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://react-leaflet-yz3w-ovd2tweav-r0l0ct.vercel.app",
-    ],
-    credentials: true,
-  })
-);
-app.use(function (req: Request, res: Response, next: NextFunction) {
-  // res.header("Access-Control-Allow-Origin", "*");
-  const allowedOrigins = [
-    "http://localhost:3000",
-    "https://react-leaflet-yz3w-ovd2tweav-r0l0ct.vercel.app",
-  ];
-  const origin = req.headers.origin as string;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
-  next();
-});
+app.use(cors());
+// app.use(function (req: Request, res: Response, next: NextFunction) {
+//   // res.header("Access-Control-Allow-Origin", "*");
+//   const allowedOrigins = [
+//     "http://localhost:3000",
+//     "https://react-leaflet-yz3w-ovd2tweav-r0l0ct.vercel.app",
+//   ];
+//   const origin = req.headers.origin as string;
+//   if (allowedOrigins.includes(origin)) {
+//     res.setHeader("Access-Control-Allow-Origin", origin);
+//   }
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   res.header("Access-Control-Allow-credentials", "true");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
+//   next();
+// });
 app.use(express.json());
 
 app.use("/", poligonoRoutes);

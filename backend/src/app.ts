@@ -24,7 +24,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://react-leaflet-yz3w-git-main-r0l0ct.vercel.app",
+      "https://react-leaflet-yz3w-ovd2tweav-r0l0ct.vercel.app",
     ],
     credentials: true,
   })
@@ -33,7 +33,7 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
   // res.header("Access-Control-Allow-Origin", "*");
   const allowedOrigins = [
     "http://localhost:3000",
-    "https://react-leaflet-yz3w-git-main-r0l0ct.vercel.app",
+    "https://react-leaflet-yz3w-ovd2tweav-r0l0ct.vercel.app",
   ];
   const origin = req.headers.origin as string;
   if (allowedOrigins.includes(origin)) {

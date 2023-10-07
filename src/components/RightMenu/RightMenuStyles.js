@@ -7,7 +7,7 @@ export const RightMenuContainerStyled = styled.div`
   background-color: purple;
   top: 20px;
   right: 0;
-  z-index: 9999;
+  z-index: 999;
   display: flex;
   flex-direction: center;
   justify-content: center;

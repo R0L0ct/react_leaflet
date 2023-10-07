@@ -17,11 +17,11 @@ export const SideMenuContainerStyled = styled.div`
     min-width: 200px;
   }
   @media (max-width: 418px) {
-    top: 221px;
-    height: calc(100vh - 221px);
     min-width: 100vw;
+    top: 0;
     padding: 0;
     padding-top: 5px;
+    border-top-right-radius: 0px;
   }
 `;
 
@@ -33,6 +33,9 @@ export const FormStyled = styled.form`
   gap: 50px;
   @media (max-width: 840px) {
     width: 100%;
+  }
+  @media (max-width: 418px) {
+    gap: 10px;
   }
 `;
 

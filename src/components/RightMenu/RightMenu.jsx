@@ -57,12 +57,12 @@ export const RightMenu = () => {
                     {nombre.name}
                   </PoligonName>
                   <ButtonStyled
-                    onClick={() => {
+                    onClick={async () => {
                       const response = window.confirm(
                         "Desea eliminar el poligono?"
                       );
                       if (response) {
-                        deletePoligono(nombre.id);
+                        await deletePoligono(nombre.id);
                         window.location.reload();
                       }
                     }}

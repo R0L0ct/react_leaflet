@@ -10,6 +10,9 @@ export const NavbarContainerStyled = styled.div`
   z-index: 9999;
   background-color: purple;
   color: white;
+  @media (max-width: 418px) {
+    justify-content: center;
+  }
 `;
 
 export const NavbarLinks = styled.div`
@@ -20,4 +23,7 @@ export const NavbarLinks = styled.div`
 export const LinkStyled = styled.p`
   font-weight: 600;
   cursor: pointer;
+  @media (max-width: 418px) {
+    font-size: 12px;
+  }
 `;

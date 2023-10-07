@@ -13,6 +13,17 @@ export const RightMenuContainerStyled = styled.div`
   justify-content: center;
   padding: 10px;
   border-bottom-left-radius: 10px;
+  @media (max-width: 840px) {
+    min-width: 150px;
+    height: 20vh;
+    padding: 6px;
+  }
+  @media (max-width: 418px) {
+    min-width: 100vw;
+    height: 22vh;
+    border-bottom-left-radius: 0px;
+    padding: 0px;
+  }
 `;
 
 export const PoligonListContainer = styled.div`
@@ -26,6 +37,11 @@ export const PoligonListContainer = styled.div`
   flex-direction: column;
   gap: 5px;
   overflow-y: auto;
+  @media (max-width: 418px) {
+    border-radius: 0px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+  }
 `;
 
 export const PoligonNameContainer = styled.div`
@@ -40,4 +56,7 @@ export const ButtonStyled = styled.button`
 export const PoligonName = styled.p`
   cursor: pointer;
   font-weight: 600;
+  @media (max-width: 840px) {
+    font-size: 12px;
+  }
 `;

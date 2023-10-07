@@ -3,13 +3,16 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { RxUpdate } from "react-icons/rx";
 import { FcCancel } from "react-icons/fc";
 import {
+  AddButtonStyled,
   ButtonListStyled,
   FormStyled,
   InputContainerStyled,
+  InputNameStyled,
   InputZone,
   InputZoneContainerStyled,
   LabelStyled,
   ListContainerStyled,
+  NameLabelStyled,
   SideMenuContainerStyled,
   StreetsStyled,
   TextAreaZone,
@@ -173,13 +176,8 @@ export const SideMenu = () => {
       </div>
       <FormStyled onSubmit={handleSubmit(onSubmit)}>
         <InputContainerStyled>
-          <label
-            htmlFor="nombre-poligono"
-            style={{ color: "black", fontWeight: "600" }}
-          >
-            Nombre:
-          </label>
-          <input
+          <NameLabelStyled htmlFor="nombre-poligono">Nombre:</NameLabelStyled>
+          <InputNameStyled
             {...register("nombrePoligono", {
               required: true,
               value: nombre,
@@ -310,9 +308,7 @@ export const SideMenu = () => {
             Modificar
           </button>
         ) : (
-          <button type="submit" style={{ cursor: "pointer" }}>
-            Agregar
-          </button>
+          <AddButtonStyled type="submit">Agregar</AddButtonStyled>
         )}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <UpdateButtonStyled
